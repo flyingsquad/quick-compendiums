@@ -121,11 +121,18 @@ function getChoiceHTML(packIds) {
 	const cellsPerRow = Math.floor(Math.sqrt(packIds.length));
 
 	let cells = 0;
+	let names = [];
 
 	for (const pack of packs) {
 		if (cells++ == 0)
 			list += `<div style="display: table-row;">`;
-		list += `<div class="control compendium" style="display: table-cell; padding-right: 10px;" data-packid="${pack.collection}" data-tooltip="${pack.collection}" aria-describedby="tooltip">${pack.metadata.label}</div>`;
+		let name = pack.metadata.label;
+		if (names.includes(name)) {
+			let [module, uuid] = pack.metadata.id.split('.');
+			name += ` (${module})`;
+		}
+		names.push(name);
+		list += `<div class="compendium" style="display: table-cell; padding-right: 10px;" data-packid="${pack.collection}">${name}</div>`;
 		if (cells >= cellsPerRow) {
 			cells = 0;
 			list += `</div>`;
