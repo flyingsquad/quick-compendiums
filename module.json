@@ -1,0 +1,20 @@
+{
+  "id": "quick-compendiums",
+  "title": "Quick Compendium Selector",
+  "description": "Button to give quick access to campaign-specific compendiums.",
+  "socket": true,
+  "authors": [
+    {
+		"name": "flying-squad"
+    }
+  ],
+  "compatibility": {
+    "minimum": "12",
+    "verified": "13"
+  },
+  "esmodules": ["qc.js"],
+  "version": "1.0.0",
+  "download": "https://github.com/flyingsquad/quick-compendium/archive/refs/tags/v1.0.0.zip",
+  "url": "https://github.com/flyingsquad/quick-compendium",
+  "manifest": "https://raw.githubusercontent.com/flyingsquad/quick-compendium/main/module.json"
+}
