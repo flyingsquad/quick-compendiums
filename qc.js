@@ -40,7 +40,7 @@ function setClickHandlers(dialog) {
 			e.preventDefault();
 			e.stopImmediatePropagation();
 			const packId = e.currentTarget.getAttribute('data-packid');
-			const index = dialog.packIds.findIndex((e) => e == packId);
+			const index = dialog.packIds.findIndex((e) => e.id == packId);
 			if (index < 0)
 				return ui.notifications.error(`Compendium ${packId} not found in list.`);
 			dialog.packIds.splice(index, 1);
@@ -77,9 +77,9 @@ class CompendiumsDialog extends foundry.applications.api.DialogV2 {
 			}
 			if (data.type != 'Compendium')
 				return ui.notifications.notify(`Drop a collection on the dialog. This was a ${data.type}.`);
-			if (this.packIds.includes(data.collection))
+			if (this.packIds.find((e) => e.id == data.collection))
 				return ui.notifications.notify(`Already listed: ${data.collection}`);
-			this.packIds.push(data.collection);
+			this.packIds.push({id: data.collection, display: null});
 			updateCompendiumList(this);
 		}
 
@@ -109,9 +109,7 @@ class CompendiumsDialog extends foundry.applications.api.DialogV2 {
 
 
 function getChoiceHTML(packIds) {
-	const packs = packIds
-		.map(id => game.packs.get(id))
-		.filter(p => p);
+	const packs = packIds.map(p => game.packs.get(p.id));
 
 	if (!packs.length)
 		return "";
@@ -123,10 +121,11 @@ function getChoiceHTML(packIds) {
 	let cells = 0;
 	let names = [];
 
-	for (const pack of packs) {
+	for (let i = 0; i < packs.length; i++) {
+		const pack =  packs[i];
 		if (cells++ == 0)
 			list += `<div style="display: table-row;">`;
-		let name = pack.metadata.label;
+		let name = packIds[i].display ? packIds[i].display : pack.metadata.label;
 		if (names.includes(name)) {
 			let [module, uuid] = pack.metadata.id.split('.');
 			name += ` (${module})`;
@@ -151,16 +150,34 @@ function getChoiceHTML(packIds) {
 
 function selectCompendium() {
 	function saveCompendiumList(packIds) {
-		const compList = packIds.join(',');
+		let compList = "";
+		for (const p of packIds) {
+			if (compList)
+				compList += ',';
+			if (p.display)
+				compList += `${p.id}[${p.display}]`;
+			else
+				compList += p.id;
+		}
 		game.settings.set(moduleId, 'compendiums', compList);
 	}
 
 	const setting = game.settings.get(moduleId, "compendiums");
 
-	const packIds = setting
-		.split(/ *, */)
-		.map(p => p.trim())
-		.filter(p => p.length);
+	let packIds = [];
+	let entries = setting.split(/ *, */);
+	for (const entry of entries) {
+		const m = entry.match(/^([^\[]+)(\[(.+)\])*$/);
+		let packInfo = {id: '', display: ''};
+		if (m && m[3]) {
+			packInfo.id = m[1];
+			packInfo.display = m[3];
+		} else {
+			packInfo.id = entry;
+			packInfo.display = null;
+		}
+		packIds.push(packInfo);
+	}
 
 	let choices = getChoiceHTML(packIds);
 
