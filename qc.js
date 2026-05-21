@@ -125,7 +125,7 @@ function getChoiceHTML(packIds) {
 	for (const pack of packs) {
 		if (cells++ == 0)
 			list += `<div style="display: table-row;">`;
-		list += `<div class="compendium" style="display: table-cell; padding-right: 10px;" data-packid="${pack.collection}">${pack.metadata.label}</div>`;
+		list += `<div class="control compendium" style="display: table-cell; padding-right: 10px;" data-packid="${pack.collection}" data-tooltip="${pack.collection}" aria-describedby="tooltip">${pack.metadata.label}</div>`;
 		if (cells >= cellsPerRow) {
 			cells = 0;
 			list += `</div>`;
