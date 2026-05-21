@@ -14,7 +14,7 @@
   },
   "esmodules": ["qc.js"],
   "version": "1.0.0",
-  "download": "https://github.com/flyingsquad/quick-compendium/archive/refs/tags/v1.0.0.zip",
-  "url": "https://github.com/flyingsquad/quick-compendium",
-  "manifest": "https://raw.githubusercontent.com/flyingsquad/quick-compendium/main/module.json"
+  "download": "https://github.com/flyingsquad/quick-compendiums/archive/refs/tags/v1.0.0.zip",
+  "url": "https://github.com/flyingsquad/quick-compendiums",
+  "manifest": "https://raw.githubusercontent.com/flyingsquad/quick-compendiums/main/module.json"
 }
