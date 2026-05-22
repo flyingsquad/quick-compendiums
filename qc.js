@@ -91,15 +91,16 @@ function setClickHandlers(dialog) {
 			dialog.close();
 		});
 		
-		// Right-click handler -- delete selected compendium.
+		if (game.user.isGM) {
+			// Right-click handler -- context menu for delete/rename.
+			elt.addEventListener("contextmenu", async (e) => {
+				e.preventDefault();
+				e.stopImmediatePropagation();
 
-		elt.addEventListener("contextmenu", async (e) => {
-			e.preventDefault();
-			e.stopImmediatePropagation();
-
-			const menu = await contextMenu(dialog, elt);
-			menu.render(elt);
-		});
+				const menu = await contextMenu(dialog, elt);
+				menu.render(elt);
+			});
+		}
 	}
 }
 
@@ -227,18 +228,20 @@ function selectCompendium() {
 	const setting = game.settings.get(moduleId, "compendiums");
 
 	let packIds = [];
-	let entries = setting.split(/ *, */);
-	for (const entry of entries) {
-		const m = entry.match(/^([^\[]+)(\[(.+)\])*$/);
-		let packInfo = {id: '', display: ''};
-		if (m && m[3]) {
-			packInfo.id = m[1];
-			packInfo.display = m[3];
-		} else {
-			packInfo.id = entry;
-			packInfo.display = null;
+	if (setting) {
+		let entries = setting.split(/ *, */);
+		for (const entry of entries) {
+			const m = entry.match(/^([^\[]+)(\[(.+)\])*$/);
+			let packInfo = {id: '', display: ''};
+			if (m && m[3]) {
+				packInfo.id = m[1];
+				packInfo.display = m[3];
+			} else {
+				packInfo.id = entry;
+				packInfo.display = null;
+			}
+			packIds.push(packInfo);
 		}
-		packIds.push(packInfo);
 	}
 
 	let choices = getChoiceHTML(packIds);

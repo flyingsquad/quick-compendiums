@@ -13,8 +13,8 @@
     "verified": "13"
   },
   "esmodules": ["qc.js"],
-  "version": "1.0.5",
-  "download": "https://github.com/flyingsquad/quick-compendiums/archive/refs/tags/v1.0.5.zip",
+  "version": "1.0.6",
+  "download": "https://github.com/flyingsquad/quick-compendiums/archive/refs/tags/v1.0.6.zip",
   "url": "https://github.com/flyingsquad/quick-compendiums",
   "manifest": "https://raw.githubusercontent.com/flyingsquad/quick-compendiums/main/module.json"
 }
