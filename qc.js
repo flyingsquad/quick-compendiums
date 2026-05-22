@@ -15,6 +15,63 @@ function getControlButtons(controls) {
 
 Hooks.on('getSceneControlButtons', (controls) => getControlButtons(controls));
 
+async function contextMenu(dialog, elt) {
+	const packId = elt.getAttribute('data-packid');
+	const menuItems = [
+		{
+			label: "Delete",
+			name: "Delete",
+			callback: (event, target) => {
+				deleteEntry(dialog, packId);
+			}
+		},
+		{
+			label: "Rename",
+			name: "Rename",
+			callback: async (event, target) => {
+				const content = `<p>Enter display name for ${packId}.<br>Leave it empty to use the original name.</p>
+					<input name="displayName" autofocus>`;
+				let dlg = new foundry.applications.api.DialogV2({
+					window: {
+						title: "Enter New Display Name",
+						modal: true
+					},
+					content: content,
+					buttons: [
+						{
+							action: "ok",
+							label: "OK",
+							callback: (event, button, dlg) => {
+								try {
+									let index = dialog.packIds.findIndex((e) => e.id == packId);
+									if (index < 0)
+										return ui.notifications.error(`Compendium ${packId} not found.`);
+									dialog.packIds[index].display = button.form.elements.displayName.value;
+									updateCompendiumList(dialog);
+								} catch (e) {
+								}
+							}
+						},
+						{
+							action: "cancel",
+							label: "Cancel"
+						}
+					]
+				});
+				dlg.render(true);
+			}
+		}
+	]
+	
+	let menu = new foundry.applications.ux.ContextMenu.implementation(
+		elt,
+		`#qcmenu`,
+		menuItems,
+		{ jQuery: false }
+	);
+	return menu;
+}
+
 function setClickHandlers(dialog) {
 	const compendiums = dialog.element.querySelectorAll('.compendium');
 	
@@ -39,14 +96,19 @@ function setClickHandlers(dialog) {
 		elt.addEventListener("contextmenu", async (e) => {
 			e.preventDefault();
 			e.stopImmediatePropagation();
-			const packId = e.currentTarget.getAttribute('data-packid');
-			const index = dialog.packIds.findIndex((e) => e.id == packId);
-			if (index < 0)
-				return ui.notifications.error(`Compendium ${packId} not found in list.`);
-			dialog.packIds.splice(index, 1);
-			updateCompendiumList(dialog);
+
+			const menu = await contextMenu(dialog, elt);
+			menu.render(elt);
 		});
 	}
+}
+
+function deleteEntry(dialog, packId) {
+	const index = dialog.packIds.findIndex((e) => e.id == packId);
+	if (index < 0)
+		return ui.notifications.error(`Compendium ${packId} not found in list.`);
+	dialog.packIds.splice(index, 1);
+	updateCompendiumList(dialog);
 }
 
 function updateCompendiumList(dialog) {
