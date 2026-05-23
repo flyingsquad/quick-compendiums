@@ -6,8 +6,8 @@ function getControlButtons(controls) {
 		title: `Compendiums`,
 		icon: "fas fa-book",
 		visible: true,
-		onClick: () => {
-			selectCompendium();
+		onChange: (event, active) => {
+			selectCompendium(event);
 		},
 		button: true
 	};
@@ -211,7 +211,7 @@ function getChoiceHTML(packIds) {
 }
 
 
-function selectCompendium() {
+function selectCompendium(event) {
 	function saveCompendiumList(packIds) {
 		let compList = "";
 		for (const p of packIds) {
@@ -275,7 +275,7 @@ function selectCompendium() {
 		window: {
 			title: "Open Compendium"
 		},
-		position: {left: 0},
+		position: {left: event.x, top: event.y},
 		content: content,
 		buttons: buttons
 	}, packIds);
