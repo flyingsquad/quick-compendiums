@@ -248,7 +248,7 @@ function selectCompendium() {
 
 	let content = `<form>`;
 	if (game.user.isGM)
-		content += `<p>Drag and drop compendiums in the dialog.<br>Right-click an entry to remove it.</p>`;
+		content += `<p>Drag and drop compendiums in the dialog.<br>Right-click an entry to remove or rename it.</p>`;
 	content +=  `<div style="display: table;">
 		<div class="complist" style="display: table-row-group">
 		  ${choices}
@@ -275,7 +275,8 @@ function selectCompendium() {
 		window: {
 			title: "Open Compendium"
 		},
-		content,
+		position: {left: 0},
+		content: content,
 		buttons: buttons
 	}, packIds);
 
