@@ -224,6 +224,14 @@ function selectCompendium(event) {
 		}
 		game.settings.set(moduleId, 'compendiums', compList);
 	}
+	
+	let x, y;
+	if (event)
+		x = event.x, y = event.y;
+	else {
+		x = Math.round(canvas.mousePosition.x);
+		y = Math.round(canvas.mousePosition.y);
+	}
 
 	const setting = game.settings.get(moduleId, "compendiums");
 
@@ -275,7 +283,7 @@ function selectCompendium(event) {
 		window: {
 			title: "Open Compendium"
 		},
-		position: {left: event.x, top: event.y},
+		position: {left: x, top: y},
 		content: content,
 		buttons: buttons
 	}, packIds);
@@ -295,4 +303,7 @@ Hooks.once('init', async function () {
 		//console.log('swade-charcheck | budget: ' + value)
 	  }
 	});
+	game.QuickCompendiums = {
+		selectCompendium: selectCompendium
+	};
 });
