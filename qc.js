@@ -186,6 +186,8 @@ function getChoiceHTML(packIds) {
 
 	for (let i = 0; i < packs.length; i++) {
 		const pack =  packs[i];
+		if (!pack)
+			continue;
 		if (cells++ == 0)
 			list += `<div style="display: table-row;">`;
 		let name = packIds[i].display ? packIds[i].display : pack.metadata.label;
